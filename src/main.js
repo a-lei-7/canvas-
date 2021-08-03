@@ -72,17 +72,17 @@ function draw() {
   drawBall(color)
   if (y + dy < ballRadius) {
     dy = -dy
+  } else if (y + dy > height - ballRadius+paddleHeight) {
+    if (x > paddleX  && x < paddleX+paddleWidth) {
+      dy = -dy
+    } else {
+      start && alert("gg")
+      start = false
+      clearInterval(id)
+    }
   }
   if (x + dx > width - ballRadius || x + dx < ballRadius / 2) {
     dx = -dx
-  }
-  if (y + dy > height - ballRadius - paddleHeight && x + dx > paddleX - (paddleWidth / 2) && x + dx < paddleX + (paddleWidth / 2)) {
-    dy = -dy
-  }
-  if (y + dy > height + ballRadius) {
-    start && alert("gg")
-    start = false
-    clearInterval(id)
   }
   x += dx
   y += dy
