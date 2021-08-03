@@ -80,7 +80,7 @@ function draw() {
     dy = -dy
   }
   if (y + dy > height + ballRadius) {
-    alert("gg")
+    start && alert("gg")
     start = false
     clearInterval(id)
   }
@@ -95,6 +95,7 @@ function draw() {
 }
 
 reload = () => {
+  clearInterval(id)
   x = width / 2
   y = height - 30
   dx = 2
@@ -103,7 +104,7 @@ reload = () => {
 //声明球板
   paddleX = (width - paddleWidth) / 2
   draw()
-  id =  setInterval(draw, 10)
+  id = setInterval(draw, 10)
   return start = true
 }
 id = start && setInterval(draw, 10)
