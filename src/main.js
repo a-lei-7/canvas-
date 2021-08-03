@@ -1,12 +1,19 @@
 const canvas = document.getElementById("myCanvas")
 const {width, height} = canvas
 const ctx = canvas.getContext("2d")
+//声明球
 let x = width / 2
 let y = height - 30
 let dx = 2
 let dy = -2
-
 let ballRadius = 10
+
+//声明球板
+const paddleHeight = 5
+const paddleWidth = 75
+let paddleX = (width - paddleWidth) / 2
+let id
+let start = true
 
 function colorMaker() { // 碰撞改变颜色
   return "#" + (function (color) {
@@ -15,15 +22,10 @@ function colorMaker() { // 碰撞改变颜色
   })("")
 }
 
-//声明球板
-const paddleHeight = 10
-const paddleWidth = 75
-let paddleX = (width - paddleWidth) / 2
-
-function drawPaddle() {
+function drawPaddle(color) {
   ctx.beginPath()
   ctx.rect(paddleX, height - paddleHeight, paddleWidth, paddleHeight)
-  ctx.fillStyle = "#0095DD"
+  ctx.fillStyle = `${color}` || "#0095DD"
   ctx.fill()
   ctx.closePath()
 }
@@ -66,23 +68,42 @@ function draw() {
       return colorMaker()
     }
   }()
+  drawPaddle(color)
   drawBall(color)
-  drawPaddle();
-  if (y + dy > height - ballRadius || y + dy < ballRadius) {
+  if (y + dy < ballRadius) {
     dy = -dy
   }
   if (x + dx > width - ballRadius || x + dx < ballRadius / 2) {
     dx = -dx
   }
+  if (y + dy > height - ballRadius - paddleHeight && x + dx > paddleX - (paddleWidth / 2) && x + dx < paddleX + (paddleWidth / 2)) {
+    dy = -dy
+  }
+  if (y + dy > height + ballRadius) {
+    alert("gg")
+    start = false
+    clearInterval(id)
+  }
   x += dx
   y += dy
 
-  if(rightPressed&&paddleX<width-paddleWidth){
-    paddleX+=7
-  }
-  else if(leftPressed&&paddleX>0){
-    paddleX-=7
+  if (rightPressed && paddleX < width - paddleWidth) {
+    paddleX += 7
+  } else if (leftPressed && paddleX > 0) {
+    paddleX -= 7
   }
 }
 
-setInterval(draw, 10)
+reload = () => {
+  x = width / 2
+  y = height - 30
+  dx = 2
+  dy = -2
+  ballRadius = 10
+//声明球板
+  paddleX = (width - paddleWidth) / 2
+  draw()
+  id =  setInterval(draw, 10)
+  return start = true
+}
+id = start && setInterval(draw, 10)

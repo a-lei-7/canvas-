@@ -11,6 +11,20 @@
       margin: 0;
     }
 
+    .button-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .controller {
+      height: 40px;
+      width: 80px;
+      border: none;
+      background-color: cadetblue;
+      border-radius: 15px;
+    }
+
     canvas {
       background: #eee;
       display: block;
@@ -21,7 +35,9 @@
 </head>
 <body>
 <canvas id="myCanvas" width="480" height="320"></canvas>
-
+<div class="button-container">
+  <button class="controller" onclick=reload()>reload</button>
+</div>
 <script src="main.js"></script>
 </body>
 </html>
