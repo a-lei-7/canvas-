@@ -25,27 +25,41 @@ let brickOffsetTop = 30
 let brickOffsetLeft = 20
 
 let bricks = [] //砖块二维数组
-function initBricks (){
-  for(let c=0; c<brickColumnCount; c++) {
-    bricks[c] = [];
-    for(let r=0; r<brickRowCount; r++) {
-      bricks[c][r] = { x: (c*(brickWidth+brickPadding))+brickOffsetLeft, y: (r*(brickHeight+brickPadding))+brickOffsetTop, visible:true };
+//分数
+let score = 0
+
+function drawScore() {
+  ctx.font = "16px Arial"
+  ctx.fillStyle = "#09d"
+  ctx.fillText("Score：" + score, 8, 20)
+}
+
+function initBricks() {
+  for (let c = 0; c < brickColumnCount; c++) {
+    bricks[c] = []
+    for (let r = 0; r < brickRowCount; r++) {
+      bricks[c][r] = {
+        x: (c * (brickWidth + brickPadding)) + brickOffsetLeft,
+        y: (r * (brickHeight + brickPadding)) + brickOffsetTop,
+        visible: true
+      }
     }
   }
 }
+
 initBricks()
 
-function drawBricks(){
-  for(let c=0;c<brickColumnCount;c++){
-    for(let r=0;r<brickRowCount;r++){
-     /* const brickX = (c*(brickWidth+brickPadding))+brickOffsetLeft
-      const brickY = (r*(brickHeight+brickPadding))+brickOffsetTop
-      bricks[c][r].x=brickX
-      bricks[c][r].y=brickY*/
+function drawBricks() {
+  for (let c = 0; c < brickColumnCount; c++) {
+    for (let r = 0; r < brickRowCount; r++) {
+      /* const brickX = (c*(brickWidth+brickPadding))+brickOffsetLeft
+       const brickY = (r*(brickHeight+brickPadding))+brickOffsetTop
+       bricks[c][r].x=brickX
+       bricks[c][r].y=brickY*/
       const brick = bricks[c][r]
-      if(brick.visible){
+      if (brick.visible) {
         ctx.beginPath()
-        ctx.rect(brick.x,brick.y,brickWidth,brickHeight)
+        ctx.rect(brick.x, brick.y, brickWidth, brickHeight)
         ctx.fillStyle = "#0095dd"
         ctx.fill()
         ctx.closePath()
@@ -55,7 +69,7 @@ function drawBricks(){
 }
 
 
-function colorMaker() { // 碰撞改变颜色
+function colorMaker() {
   console.log("colorMaker")
   return "#" + (function (color) {
     return (color += "0123456789abcdef"[Math.floor(Math.random() * 16)])
@@ -89,16 +103,22 @@ function keyUpHandler(e) {
     leftPressed = false
   }
 }
+
 // 撞击侦测函数
-function collisionDetection(){
-  for(let c=0;c<brickColumnCount;c++){
-    for(let r=0;r<brickRowCount;r++){
+function collisionDetection() {
+  for (let c = 0; c < brickColumnCount; c++) {
+    for (let r = 0; r < brickRowCount; r++) {
       const b = bricks[c][r]
-      if(b.visible){
-        if(x>b.x&&x<b.x+brickWidth&&y>b.y&&y<b.y+brickHeight){
-          dy=-dy
+      if (b.visible) {
+        if (x > b.x && x < b.x + brickWidth && y > b.y && y < b.y + brickHeight) {
+          dy = -dy
           b.visible = false
           color = colorMaker()
+          score+=10
+          if (score === brickRowCount * brickColumnCount) {
+            alert("win")
+            document.location.reload()
+          }
         }
       }
     }
@@ -123,13 +143,14 @@ function draw() {
   drawPaddle()
   collisionDetection()
   drawBall(color)
+  drawScore()
   if (y + dy < ballRadius) {
     dy = -dy
-  } else if (y + dy > height - ballRadius+paddleHeight) {
-    if (x > paddleX  && x < paddleX+paddleWidth) {
+  } else if (y + dy > height - ballRadius + paddleHeight) {
+    if (x > paddleX && x < paddleX + paddleWidth) {
       dy = -dy
     } else {
-      start && alert("gg")
+      start && alert("此次一共击破了"+score/10+"个砖头")
       start = false
       clearInterval(id)
     }
@@ -154,6 +175,7 @@ reload = () => {
   dx = 2
   dy = -2
   ballRadius = 10
+  score = 0
 //声明球板
   paddleX = (width - paddleWidth) / 2
   initBricks()
