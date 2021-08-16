@@ -115,7 +115,7 @@ function collisionDetection() {
           b.visible = false
           color = colorMaker()
           score+=10
-          if (score === brickRowCount * brickColumnCount) {
+          if (score === brickRowCount * brickColumnCount *10) {
             alert("win")
             document.location.reload()
           }
@@ -125,8 +125,17 @@ function collisionDetection() {
   }
 }
 
+function moseMoveHandler(e){
+  const relativeX = e.clientX - canvas.offsetLeft
+  if(relativeX - paddleWidth/2> 0 && relativeX + paddleWidth/2 < canvas.width){
+    paddleX = relativeX - paddleWidth/2
+  }
+}
+
 document.addEventListener("keydown", keyDownHandler, false)
 document.addEventListener("keyup", keyUpHandler, false)
+
+document.addEventListener("mousemove",moseMoveHandler,false)
 
 
 function drawBall(color) {
