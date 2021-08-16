@@ -7,10 +7,10 @@ let y = height - 30
 let dx = 2
 let dy = -2
 let ballRadius = 10
-
+let color = "#0095dd"
 //声明球板
 const paddleHeight = 5
-const paddleWidth = 75
+const paddleWidth = 200
 let paddleX = (width - paddleWidth) / 2
 let id
 let start = true
@@ -28,38 +28,42 @@ let bricks = [] //砖块二维数组
 for(let c=0; c<brickColumnCount; c++) {
   bricks[c] = [];
   for(let r=0; r<brickRowCount; r++) {
-    bricks[c][r] = { x: 0, y: 0 };
+    bricks[c][r] = { x: (c*(brickWidth+brickPadding))+brickOffsetLeft, y: (r*(brickHeight+brickPadding))+brickOffsetTop, visible:true };
   }
 }
 
 function drawBricks(){
   for(let c=0;c<brickColumnCount;c++){
     for(let r=0;r<brickRowCount;r++){
-      const brickX = (c*(brickWidth+brickPadding))+brickOffsetLeft
+     /* const brickX = (c*(brickWidth+brickPadding))+brickOffsetLeft
       const brickY = (r*(brickHeight+brickPadding))+brickOffsetTop
       bricks[c][r].x=brickX
-      bricks[c][r].y=brickY
-      ctx.beginPath()
-      ctx.rect(brickX,brickY,brickWidth,brickHeight)
-      ctx.fillStyle = "#0095dd"
-      ctx.fill()
-      ctx.closePath()
+      bricks[c][r].y=brickY*/
+      const brick = bricks[c][r]
+      if(brick.visible){
+        ctx.beginPath()
+        ctx.rect(brick.x,brick.y,brickWidth,brickHeight)
+        ctx.fillStyle = "#0095dd"
+        ctx.fill()
+        ctx.closePath()
+      }
     }
   }
 }
 
 
 function colorMaker() { // 碰撞改变颜色
+  console.log("colorMaker")
   return "#" + (function (color) {
     return (color += "0123456789abcdef"[Math.floor(Math.random() * 16)])
     && (color.length === 6) ? color : arguments.callee(color)
   })("")
 }
 
-function drawPaddle(color) {
+function drawPaddle() {
   ctx.beginPath()
   ctx.rect(paddleX, height - paddleHeight, paddleWidth, paddleHeight)
-  ctx.fillStyle = `${color}` || "#0095DD"
+  ctx.fillStyle = "#0095dd"
   ctx.fill()
   ctx.closePath()
 }
@@ -82,6 +86,21 @@ function keyUpHandler(e) {
     leftPressed = false
   }
 }
+// 撞击侦测函数
+function collisionDetection(){
+  for(let c=0;c<brickColumnCount;c++){
+    for(let r=0;r<brickRowCount;r++){
+      const b = bricks[c][r]
+      if(b.visible){
+        if(x>b.x&&x<b.x+brickWidth&&y>b.y&&y<b.y+brickHeight){
+          dy=-dy
+          b.visible = false
+          color = colorMaker()
+        }
+      }
+    }
+  }
+}
 
 document.addEventListener("keydown", keyDownHandler, false)
 document.addEventListener("keyup", keyUpHandler, false)
@@ -98,12 +117,8 @@ function drawBall(color) {
 
 function draw() {
   ctx.clearRect(0, 0, width, height)
-  const color = function () {
-    if ((dx > 0 && x + ballRadius === width) || (dx < 0 && x - ballRadius === 0) || (dy > 0 && y + ballRadius === height) || (dy < 0 && y - ballRadius === 0)) {
-      return colorMaker()
-    }
-  }()
-  drawPaddle(color)
+  drawPaddle()
+  collisionDetection()
   drawBall(color)
   if (y + dy < ballRadius) {
     dy = -dy
