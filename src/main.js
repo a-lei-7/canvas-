@@ -25,12 +25,15 @@ let brickOffsetTop = 30
 let brickOffsetLeft = 20
 
 let bricks = [] //砖块二维数组
-for(let c=0; c<brickColumnCount; c++) {
-  bricks[c] = [];
-  for(let r=0; r<brickRowCount; r++) {
-    bricks[c][r] = { x: (c*(brickWidth+brickPadding))+brickOffsetLeft, y: (r*(brickHeight+brickPadding))+brickOffsetTop, visible:true };
+function initBricks (){
+  for(let c=0; c<brickColumnCount; c++) {
+    bricks[c] = [];
+    for(let r=0; r<brickRowCount; r++) {
+      bricks[c][r] = { x: (c*(brickWidth+brickPadding))+brickOffsetLeft, y: (r*(brickHeight+brickPadding))+brickOffsetTop, visible:true };
+    }
   }
 }
+initBricks()
 
 function drawBricks(){
   for(let c=0;c<brickColumnCount;c++){
@@ -153,6 +156,7 @@ reload = () => {
   ballRadius = 10
 //声明球板
   paddleX = (width - paddleWidth) / 2
+  initBricks()
   draw()
   id = setInterval(draw, 10)
   return start = true
