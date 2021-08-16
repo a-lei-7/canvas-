@@ -15,6 +15,40 @@ let paddleX = (width - paddleWidth) / 2
 let id
 let start = true
 
+//声明砖块
+let brickRowCount = 5
+let brickColumnCount = 6
+let brickWidth = 65
+let brickHeight = 20
+let brickPadding = 10
+let brickOffsetTop = 30
+let brickOffsetLeft = 20
+
+let bricks = [] //砖块二维数组
+for(let c=0; c<brickColumnCount; c++) {
+  bricks[c] = [];
+  for(let r=0; r<brickRowCount; r++) {
+    bricks[c][r] = { x: 0, y: 0 };
+  }
+}
+
+function drawBricks(){
+  for(let c=0;c<brickColumnCount;c++){
+    for(let r=0;r<brickRowCount;r++){
+      const brickX = (c*(brickWidth+brickPadding))+brickOffsetLeft
+      const brickY = (r*(brickHeight+brickPadding))+brickOffsetTop
+      bricks[c][r].x=brickX
+      bricks[c][r].y=brickY
+      ctx.beginPath()
+      ctx.rect(brickX,brickY,brickWidth,brickHeight)
+      ctx.fillStyle = "#0095dd"
+      ctx.fill()
+      ctx.closePath()
+    }
+  }
+}
+
+
 function colorMaker() { // 碰撞改变颜色
   return "#" + (function (color) {
     return (color += "0123456789abcdef"[Math.floor(Math.random() * 16)])
@@ -54,6 +88,7 @@ document.addEventListener("keyup", keyUpHandler, false)
 
 
 function drawBall(color) {
+  drawBricks()
   ctx.beginPath()
   ctx.arc(x, y, ballRadius, 0, Math.PI * 2)
   ctx.fillStyle = `${color}` || "#0095DD"
